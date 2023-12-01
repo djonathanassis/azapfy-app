@@ -1,0 +1,347 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Open Food Facts API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api/v1"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "/auth"
+                ],
+                "summary": "User Login",
+                "operationId": "60f45f26ada20045cc3deb77c7cf77bd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "email"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "token": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "/auth"
+                ],
+                "summary": "User logout",
+                "operationId": "d77cf98edbe6420e5c410311fd05cb22",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token Revoked"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "/auth"
+                ],
+                "summary": "Display only one product",
+                "description": "Get a product from the database",
+                "operationId": "0f4308446e0e451a3764f421d1b78a22",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "ProductDto id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show a product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/invoices": {
+            "get": {
+                "tags": [
+                    "/invoices"
+                ],
+                "summary": "Display a listing of the resource and paginate then",
+                "description": "Get all products on database",
+                "operationId": "2918f8941342b3fb67e05747c84292d9",
+                "responses": {
+                    "200": {
+                        "description": "List of products"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/invoices/{invoice}": {
+            "get": {
+                "tags": [
+                    "/invoices"
+                ],
+                "summary": "Display only one product",
+                "description": "Get a product from the database",
+                "operationId": "a517b1c0858b8c36d4813499c3d8053e",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "ProductDto id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show a product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "/invoices"
+                ],
+                "summary": "Update a product",
+                "description": "Update a product on database",
+                "operationId": "a40e07f5b2e5800f3ae9730319040d51",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "ProductDto id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "quantity": {
+                                        "type": "string"
+                                    },
+                                    "brands": {
+                                        "type": "string"
+                                    },
+                                    "categories": {
+                                        "type": "string"
+                                    },
+                                    "labels": {
+                                        "type": "string"
+                                    },
+                                    "cities": {
+                                        "type": "string"
+                                    },
+                                    "purchasePlaces": {
+                                        "type": "string"
+                                    },
+                                    "stores": {
+                                        "type": "string"
+                                    },
+                                    "ingredientsText": {
+                                        "type": "string"
+                                    },
+                                    "traces": {
+                                        "type": "string"
+                                    },
+                                    "servingSize": {
+                                        "type": "string"
+                                    },
+                                    "servingQuantity": {
+                                        "type": "integer"
+                                    },
+                                    "nutriScore": {
+                                        "type": "integer"
+                                    },
+                                    "nutriScoreGrade": {
+                                        "type": "string"
+                                    },
+                                    "mainCategory": {
+                                        "type": "string"
+                                    },
+                                    "imageUrl": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Update a product"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "/invoices"
+                ],
+                "summary": "Display only one product",
+                "description": "Get a product from the database",
+                "operationId": "b2faafab1b292cd71e7626c16d0a5c68",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "ProductDto id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show a product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "/invoices"
+                ],
+                "summary": "Change the product status",
+                "description": "Change the product status to 'trash'",
+                "operationId": "1a2cf0dde9ee2180fbdaf078b4329597",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "ProductDto id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Change the product status"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    }
+}
