@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Interfaces\InvoiceInterface;
 use App\Models\Invoice;
+use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Annotations as OA;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InvoiceController extends Controller
 {
+    use HttpResponses;
+
     public function __construct(
         private readonly InvoiceInterface $invoiceService
     ) {
@@ -38,10 +41,16 @@ class InvoiceController extends Controller
     {
         Gate::authorize('viewAny', Invoice::class);
 
-        $response = $this->invoiceService->findAll();
-        return (new InvoiceResource($response))
-            ->response()
-            ->setStatusCode(Response::HTTP_OK);
+        try {
+            $response = $this->invoiceService->findAll();
+            return (new InvoiceResource($response))
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -76,13 +85,19 @@ class InvoiceController extends Controller
     {
         Gate::authorize('create', Invoice::class);
 
-        $attributes = InvoiceDto::fromApiRequest($request);
+        try {
+            $this->invoiceService->create(
+                InvoiceDto::fromApiRequest($request)->toArray()
+            );
+            return (new InvoiceResource(null))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
 
-        $this->invoiceService->create($attributes->toArray());
-
-        return (new InvoiceResource(null))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -111,9 +126,16 @@ class InvoiceController extends Controller
     {
         Gate::authorize('view', $invoice);
 
-        return (new InvoiceResource($invoice))
-            ->response()
-            ->setStatusCode(Response::HTTP_OK);
+        try {
+            return (new InvoiceResource($invoice))
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
     }
 
     /**
@@ -158,16 +180,18 @@ class InvoiceController extends Controller
     {
         Gate::authorize('update', $invoice);
 
-        $attributes = InvoiceDto::fromApiRequest($request);
-
-        $response = $this->invoiceService->update(
-            $attributes->toArray(),
-            $invoice->id
-        );
-
-        return (new InvoiceResource($response))
-            ->response()
-            ->setStatusCode(Response::HTTP_ACCEPTED);
+        try {
+            $response = $this->invoiceService->update(
+                InvoiceDto::fromApiRequest($request)->toArray(), $invoice->id
+            );
+            return (new InvoiceResource($response))
+                ->response()
+                ->setStatusCode(Response::HTTP_ACCEPTED);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -196,8 +220,13 @@ class InvoiceController extends Controller
     {
         Gate::authorize('delete', $invoice);
 
-        $this->invoiceService->delete($invoice->id);
-
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        try {
+            $this->invoiceService->delete($invoice->id);
+            return response()->json(null, Response::HTTP_NO_CONTENT);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

@@ -11,6 +11,7 @@ class InvoiceDto extends AbstractDto
     public function __construct(
        readonly public string $number,
        readonly public float $amount,
+       readonly public string $date_emissary,
        readonly public string $cnpj_retirement,
        readonly public string $name_retirement,
        readonly public string $cnpj_transporter,
@@ -23,6 +24,7 @@ class InvoiceDto extends AbstractDto
         return new self(
             number: $resolved->validated('payload.number'),
             amount: $resolved->validated('payload.amount'),
+            date_emissary: $resolved->validated('payload.date_emissary'),
             cnpj_retirement: $resolved->validated('payload.cnpj_retirement'),
             name_retirement: $resolved->validated('payload.name_retirement'),
             cnpj_transporter: $resolved->validated('payload.cnpj_transporter'),

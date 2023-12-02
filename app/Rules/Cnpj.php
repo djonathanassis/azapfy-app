@@ -8,35 +8,35 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Cnpj implements Rule
 {
+
     public function passes($attribute, $value): bool
     {
-        $cnpj = preg_replace('/\D/', '', $value);
+        $c = preg_replace('/\D/', '', $value);
 
-        if (strlen($cnpj) !== 14 || preg_match("/^{$cnpj[0]}{14}$/", $cnpj) > 0) {
+        $b = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+        if (strlen($c) != 14) {
             return false;
         }
 
-        $multipliers = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-
-        $sum = 0;
-        for ($i = 0; $i < 12; $i++) {
-            $sum += $cnpj[$i] * $multipliers[$i + 1];
-        }
-
-        $digit1 = (($sum %= 11) < 2) ? 0 : 11 - $sum;
-
-        if ($cnpj[12] !== $digit1) {
+        elseif (preg_match("/^{$c[0]}{14}$/", $c) > 0) {
             return false;
         }
 
-        $sum = 0;
-        for ($i = 0; $i <= 12; $i++) {
-            $sum += $cnpj[$i] * $multipliers[$i];
+        for ($i = 0, $n = 0; $i < 12; $n += $c[$i] * $b[++$i]){}
+
+        if ($c[12] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+            return false;
         }
 
-        $digit2 = (($sum %= 11) < 2) ? 0 : 11 - $sum;
+        for ($i = 0, $n = 0; $i <= 12; $n += $c[$i] * $b[$i++]){}
 
-        return $cnpj[13] === $digit2;
+        if ($c[13] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+            return false;
+        }
+
+        return true;
+
     }
 
     public function message(): string

@@ -7,13 +7,23 @@ namespace App\Http\Controllers\Auth;
 use App\DTOs\Auth\RegisterUserDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Interfaces\RegisteredInterface;
 use App\Models\Tenant;
+use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisteredController extends Controller
 {
+    use HttpResponses;
+
+    public function __construct(
+        private readonly RegisteredInterface $registeredService
+    )
+    {
+    }
+
     /**
      * @OA\Post(
      *      tags={"/auth"},
@@ -38,11 +48,16 @@ class RegisteredController extends Controller
      */
     public function __invoke(RegisterRequest $request): JsonResponse
     {
-        $attributes = RegisterUserDto::fromApiRequest($request);
-
-        $tenant = Tenant::query()->create(['name' => $attributes->name]);
-        $tenant->users()->create($attributes->toArray());
-
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        try {
+            $this->registeredService->create(
+                RegisterUserDto::fromApiRequest($request)->toArray()
+            );
+            return $this->responseSuccess(null, 'Successful',
+                Response::HTTP_NO_CONTENT);
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

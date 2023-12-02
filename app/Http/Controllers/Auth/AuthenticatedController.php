@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthRequest;
+use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticatedController extends Controller
 {
+    use HttpResponses;
+
     /**
      * * @OA\Post(
      *      tags={"/auth"},
@@ -47,13 +50,20 @@ class AuthenticatedController extends Controller
      */
     public function login(AuthRequest $request): JsonResponse
     {
-        $request->authenticate();
-
-        return response()->json([
-            'token' => $request->user()
-                ->createToken($request->userAgent())
-                ->plainTextToken
-        ])->setStatusCode(202);
+        try {
+            $request->authenticate();
+            $token = $request->user()->createToken($request->userAgent())
+                    ->plainTextToken;
+            return $this->responseSuccess(
+                ['token' => $token],
+                'User Authenticated',
+                Response::HTTP_ACCEPTED
+            );
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
@@ -75,10 +85,16 @@ class AuthenticatedController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Token Revoked'
-        ])->setStatusCode(Response::HTTP_OK);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return $this->responseSuccess(
+                null, 'Token Revoked',
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return $this->responseError(null, $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

@@ -13,9 +13,10 @@ class InvoiceFactory extends Factory
         return [
             'number' => (string) $this->faker->numberBetween(100000000, 999999999),
             'amount' =>  $this->faker->numberBetween(0, 9999),
-            'cnpj_retirement' => (string) $this->faker->numberBetween(10000000000000, 99999999999999),
+            'date_emissary' =>  "2023-12-01 01:23:14",
+            'cnpj_retirement' => "23326986000190",
             'name_retirement' => (string) $this->faker->name,
-            'cnpj_transporter' => (string) $this->faker->numberBetween(10000000000000, 99999999999999),
+            'cnpj_transporter' => "23326986000190",
             'name_transporter' => (string) $this->faker->name,
         ];
     }

@@ -26,7 +26,7 @@ class InvoiceTest extends TestCase
             'password' => 'password'
         ]);
 
-        $this->token = $response->json('token');
+        $this->token = $response->collect('data')->get('token');
     }
 
     public function test_all_invoice_endpoint(): void

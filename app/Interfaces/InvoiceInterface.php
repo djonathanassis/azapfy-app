@@ -8,9 +8,9 @@ interface InvoiceInterface
 
     public function findOne(int $id): mixed;
 
-    public function create(array $data): mixed;
+    public function create(array $data): void;
 
     public function update(array $data, int $id): mixed;
 
-    public function delete(int $id): bool;
+    public function delete(int $id): void;
 }

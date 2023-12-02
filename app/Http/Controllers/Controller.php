@@ -9,7 +9,14 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Server(url="http://localhost/api/v1")
- * @OA\Info(title="Open Food Facts API", version="1.0.0")
+ * @OA\Info(
+ *      description="API Documentation",
+ *      version="1.0.0",
+ *      title="Laravel API Documentation",
+ *      @OA\Contact(
+ *          email="djonathanassis@gmail.com"
+ *      )
+ *  )
  */
 class Controller extends BaseController
 {

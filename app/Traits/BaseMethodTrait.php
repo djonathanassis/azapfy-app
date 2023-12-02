@@ -18,9 +18,9 @@ trait BaseMethodTrait
         return $this->model->findOrFail($id);
     }
 
-    public function create(array $data): mixed
+    public function create(array $data): void
     {
-        return $this->model->create($data);
+        $this->model->create($data);
     }
 
     public function update(array $data, int $id): mixed
@@ -30,9 +30,9 @@ trait BaseMethodTrait
         return $model;
     }
 
-    public function delete(int $id): bool
+    public function delete(int $id): void
     {
-        return $this->model->findOrFail($id)->delete();
+       $this->model->findOrFail($id)->delete();
     }
 
 }
