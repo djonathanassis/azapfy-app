@@ -19,15 +19,21 @@ trait BaseMethodTrait
         return $this->model->findOrFail($id);
     }
 
-    public function create(MethodDtoInterface $dto): void
+    public function create(MethodDtoInterface|array $dto): void
     {
-        $this->model->create($dto->toArray());
+        is_array($dto)
+            ? $this->model->create($dto)
+            : $this->model->create($dto->toArray());
     }
 
-    public function update(MethodDtoInterface $dto, int $id): mixed
+    public function update(MethodDtoInterface|array $dto, int $id): mixed
     {
         $model = $this->model->findOrFail($id);
-        $model->update($dto->toArray());
+
+        is_array($dto)
+            ? $model->update($dto)
+            : $model->update($dto->toArray());
+
         return $model;
     }
 
