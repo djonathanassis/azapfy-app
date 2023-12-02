@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Auth;
 
+use App\Interfaces\MethodDtoInterface;
 use App\Interfaces\RegisteredInterface;
 use App\Models\Tenant;
 use App\Models\User;
@@ -16,13 +17,13 @@ class RegisteredService extends AbstractService implements RegisteredInterface
         parent::__construct($user);
     }
 
-    public function create(array $data): void
+    public function create(MethodDtoInterface $dto): void
     {
         $tenant = Tenant::query()
-            ->create(['name' => $data['name']]
+            ->create(['name' => $dto->name]
             );
 
-        $tenant->users()->create($data);
+        $tenant->users()->create($dto->toArray());
     }
 
 }

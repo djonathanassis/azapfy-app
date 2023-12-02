@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
+use App\Interfaces\MethodDtoInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 trait BaseMethodTrait
@@ -18,15 +19,15 @@ trait BaseMethodTrait
         return $this->model->findOrFail($id);
     }
 
-    public function create(array $data): void
+    public function create(MethodDtoInterface $dto): void
     {
-        $this->model->create($data);
+        $this->model->create($dto->toArray());
     }
 
-    public function update(array $data, int $id): mixed
+    public function update(MethodDtoInterface $dto, int $id): mixed
     {
         $model = $this->model->findOrFail($id);
-        $model->update($data);
+        $model->update($dto->toArray());
         return $model;
     }
 

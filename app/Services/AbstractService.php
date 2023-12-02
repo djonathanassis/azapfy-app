@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Interfaces\BaseMethodInterface;
 use App\Traits\BaseMethodTrait;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\ForwardsCalls;
 
-abstract class AbstractService
+abstract class AbstractService implements BaseMethodInterface
 {
     use ForwardsCalls, BaseMethodTrait;
 

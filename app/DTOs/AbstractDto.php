@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
+use App\Interfaces\MethodDtoInterface;
 use Illuminate\Contracts\Support\Arrayable;
 
-abstract class AbstractDto implements Arrayable
+abstract class AbstractDto implements Arrayable, MethodDtoInterface
 {
     public function toArray(): array
     {

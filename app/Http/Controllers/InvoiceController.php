@@ -86,9 +86,7 @@ class InvoiceController extends Controller
         Gate::authorize('create', Invoice::class);
 
         try {
-            $this->invoiceService->create(
-                InvoiceDto::fromApiRequest($request)->toArray()
-            );
+            $this->invoiceService->create(InvoiceDto::fromApiRequest($request));
             return (new InvoiceResource(null))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
@@ -182,7 +180,7 @@ class InvoiceController extends Controller
 
         try {
             $response = $this->invoiceService->update(
-                InvoiceDto::fromApiRequest($request)->toArray(), $invoice->id
+                InvoiceDto::fromApiRequest($request), $invoice->id
             );
             return (new InvoiceResource($response))
                 ->response()

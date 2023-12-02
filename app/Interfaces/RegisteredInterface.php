@@ -6,6 +6,5 @@ namespace App\Interfaces;
 
 interface RegisteredInterface
 {
-    public function create(array $data): void;
 
 }
