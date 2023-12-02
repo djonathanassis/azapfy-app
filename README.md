@@ -66,6 +66,11 @@ docker run --rm \
  ```
 - Após finalizado processamento, execute o comando `./sail up -d`
 
+Crie uma chave de API com o Docker para o arquivo `.env`
+```sh
+sail artisan key:generate
+```
+
 O primeiro comando realiza a instalação dos pacotes via composer especificados no arquivo `composer.json` e uma vez que a instalação termina, a pasta *vendor* passa a ficar disponível no projeto. O comando seguinte levanta os contêineres baseado na descrição de serviços feita no arquivo `docker-compose.yml`.
 
 Por padrão, não é necessária nenhuma configuração no arquivo *.env* do projeto. Caso seja necessária alguma edição na configuração padrão (relacionado a binding ports ou credenciais de banco de dados), basta editar o arquivo *.env*.
