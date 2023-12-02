@@ -7,7 +7,6 @@ tempo livre, não sofra sozinho e nem perca seu sono, sua saúde mental vale mai
 
 Fique tranquilo, leia tudo e qualquer dúvida ou problema, estamos disponíveis para te ajudar.
 
-
 ## Requisitos
 
 ### Pontos essenciais:
@@ -48,6 +47,11 @@ O projeto se utiliza de contêineres Docker, através do pacote *Laravel Sail* p
 ### Passos para o rodar o projeto localmente:
 
 - Faça um clone do projeto para sua máquina local
+```shell
+git clone https://gitlab.com/djonathanassis/openfoodfacts-api.git
+```
+
+
 - Crie um arquivo `.env`, recomendamos usar `.env-example` como base
 - Adicione ou altere as chaves conforme sua necessidade
 - acesse a pasta do projeto via console (terminal/PowerShell/CMD)
@@ -65,3 +69,17 @@ docker run --rm \
 O primeiro comando realiza a instalação dos pacotes via composer especificados no arquivo `composer.json` e uma vez que a instalação termina, a pasta *vendor* passa a ficar disponível no projeto. O comando seguinte levanta os contêineres baseado na descrição de serviços feita no arquivo `docker-compose.yml`.
 
 Por padrão, não é necessária nenhuma configuração no arquivo *.env* do projeto. Caso seja necessária alguma edição na configuração padrão (relacionado a binding ports ou credenciais de banco de dados), basta editar o arquivo *.env*.
+
+### Passos para rodar os testes automatizados
+
+- Acesse a pasta do projeto via console (terminal/PowerShell/CMD)
+- execute o comando:
+  a os passo a passo para rodar teste unitários:
+```sh
+ sail artisan test 
+```
+Passos para rodar processar trabalhos da fila:
+
+```sh
+ sail artisan queue:work
+```
