@@ -48,7 +48,7 @@ O projeto se utiliza de contêineres Docker, através do pacote *Laravel Sail* p
 
 - Faça um clone do projeto para sua máquina local
 ```shell
-git clone https://gitlab.com/djonathanassis/openfoodfacts-api.git
+git clone https://github.com/djonathanassis/azapfy-app.git
 ```
 
 
