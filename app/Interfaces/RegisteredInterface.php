@@ -6,5 +6,5 @@ namespace App\Interfaces;
 
 interface RegisteredInterface
 {
-
+    public function register(MethodDtoInterface $dto): void;
 }

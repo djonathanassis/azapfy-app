@@ -17,7 +17,7 @@ class RegisteredService extends AbstractService implements RegisteredInterface
         parent::__construct($user);
     }
 
-    public function create(MethodDtoInterface $dto): void
+    public function register(MethodDtoInterface $dto): void
     {
         $tenant = Tenant::query()
             ->create(['name' => $dto->name]

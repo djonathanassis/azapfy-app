@@ -49,7 +49,7 @@ class RegisteredController extends Controller
     public function __invoke(RegisterRequest $request): JsonResponse
     {
         try {
-            $this->registeredService->create(RegisterUserDto::fromApiRequest($request));
+            $this->registeredService->register(RegisterUserDto::fromApiRequest($request));
             return $this->responseSuccess(null, 'Successful',
                 Response::HTTP_NO_CONTENT);
         } catch (\Throwable $th) {
