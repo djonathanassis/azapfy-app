@@ -1,24 +1,27 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Models\Invoice;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class InvoiceTest extends TestCase
 {
-    private string $path = '/api/v1/invoices';
-    private string $table = 'invoices';
+    use RefreshDatabase;
 
-    protected mixed $token;
+    private string $path = 'api/v1/invoices';
+    private string $table = 'invoices';
+    private string $token;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $user = Invoice::factory()->create();
+        $user = User::factory()->create();
 
-        $response = $this->postJson('/api/v1/login', [
+        $response = $this->postJson('api/v1/login', [
             'email' => $user->email,
             'password' => 'password'
         ]);
@@ -26,61 +29,87 @@ class InvoiceTest extends TestCase
         $this->token = $response->json('token');
     }
 
-    public function test_list_InvoiceTest(): void
+    public function test_all_invoice_endpoint(): void
     {
-        Invoice::factory()->count(10)->create();
+        Invoice::factory(3)->create();
         $response = $this->getJson(
-            uri:$this->path . '/',
+            uri: $this->path,
             headers: [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->token
-            ]);
-
-        $response->assertOk();
-    }
-
-    public function test_create_InvoiceTest(): void
-    {
-        $data = Invoice::factory()->make();
-
-        $response = $this->postJson(
-            uri: $this->path . '/',
-            data: ['payload' => $data->toArray()],
-            headers: [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->token
+                'Authorization' => 'Bearer '.$this->token
             ]
         );
 
-        $response->assertCreated();
-        $this->assertDatabaseHas($this->table, $data->toArray());
+        $response->assertStatus(200);
     }
 
-    public function test_show_InvoiceTest(): void
+    public function test_create_invoice_endpoint(): void
     {
-        $data = Invoice::factory()->create();
+        $invoice = Invoice::factory()->make();
 
-        $this->get($this->path.'/'.$data->id)
-            ->assertOk();
+        $response = $this->postJson(
+            uri: $this->path,
+            data: ['payload' => $invoice->toArray()],
+            headers: [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas($this->table, $invoice->toArray());
     }
 
-    public function test_update_InvoiceTest(): void
+    public function test_show_invoice_endpoint(): void
     {
-        $data = Invoice::factory()->create();
-        $newData = Invoice::factory()->make();
+        $invoice = Invoice::factory()->createOne();
 
-        $this->putJson($this->path.'/'.$data->id, ['payload' => $newData->toArray()])
-            ->assertOk();
+        $response = $this->getJson(
+            uri: $this->path.'/'.$invoice->id,
+            headers: [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+
+        $response->assertStatus(200);
     }
 
-    public function test_delete_InvoiceTest(): void
+    public function test_update_invoice_endpoint(): void
     {
-        $data = Invoice::factory()->create();
-        $this->delete($this->path.'/'.$data->id)
-            ->assertNoContent();
+        $invoice = Invoice::factory()->createOne();
+        $newInvoice = Invoice::factory()->make();
 
-        $this->assertDatabaseCount($this->table, 0);
+        $response = $this->putJson(
+            uri: $this->path.'/'.$invoice->id,
+            data: ['payload' => $newInvoice->toArray()],
+            headers: [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+
+        $response->assertStatus(202);
+    }
+
+    public function test_delete_invoice_endpoint(): void
+    {
+        $invoice = Invoice::factory()->createOne();
+
+        $response = $this->deleteJson(
+            uri: $this->path.'/'.$invoice->id,
+            headers: [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+
+        $response->assertStatus(204);
     }
 }

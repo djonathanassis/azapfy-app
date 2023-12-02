@@ -11,7 +11,6 @@ use App\Http\Resources\InvoiceResource;
 use App\Interfaces\InvoiceInterface;
 use App\Models\Invoice;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +39,9 @@ class InvoiceController extends Controller
         Gate::authorize('viewAny', Invoice::class);
 
         $response = $this->invoiceService->findAll();
-        return response()->json($response, Response::HTTP_OK);
+        return (new InvoiceResource($response))
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
@@ -73,14 +74,11 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request): JsonResponse
     {
-
         Gate::authorize('create', Invoice::class);
 
         $attributes = InvoiceDto::fromApiRequest($request);
 
-        $this->invoiceService->create(
-            $attributes->toArray()
-        );
+        $this->invoiceService->create($attributes->toArray());
 
         return (new InvoiceResource(null))
             ->response()
@@ -109,12 +107,13 @@ class InvoiceController extends Controller
      *      )
      * )
      */
-    public function show(int $id): JsonResponse
+    public function show(Invoice $invoice): JsonResponse
     {
-        Gate::authorize('view', Invoice::class);
+        Gate::authorize('view', $invoice);
 
-        $response = $this->invoiceService->findOne($id);
-        return response()->json($response, Response::HTTP_OK);
+        return (new InvoiceResource($invoice))
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
@@ -155,15 +154,15 @@ class InvoiceController extends Controller
      *      )
      * )
      */
-    public function update(UpdateInvoiceRequest $request, int $id): JsonResponse
+    public function update(UpdateInvoiceRequest $request, Invoice $invoice): JsonResponse
     {
-        Gate::authorize('update', Invoice::class);
+        Gate::authorize('update', $invoice);
 
-        $attributes = InvoiceDto::fromApiRequest($request->validated());
+        $attributes = InvoiceDto::fromApiRequest($request);
 
         $response = $this->invoiceService->update(
             $attributes->toArray(),
-            $id
+            $invoice->id
         );
 
         return (new InvoiceResource($response))
@@ -193,11 +192,11 @@ class InvoiceController extends Controller
      *      )
      * )
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Invoice $invoice): JsonResponse
     {
-        Gate::authorize('delete', Invoice::class);
+        Gate::authorize('delete', $invoice);
 
-        $this->invoiceService->delete($id);
+        $this->invoiceService->delete($invoice->id);
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

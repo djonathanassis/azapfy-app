@@ -17,7 +17,7 @@ class InvoicePolicy
 
     public function view(User $user, Invoice $invoice): bool
     {
-        return $invoice->user()->is($user);
+       return $user->tenant_id === $invoice->tenant_id;
     }
 
     public function create(User $user): bool
@@ -27,22 +27,22 @@ class InvoicePolicy
 
     public function update(User $user, Invoice $invoice): bool
     {
-        return $invoice->user()->is($user);
 
+        return $user->tenant_id === $invoice->tenant_id;
     }
 
     public function delete(User $user, Invoice $invoice): bool
     {
-        return $invoice->user()->is($user);
+        return $user->tenant_id === $invoice->tenant_id;
     }
 
     public function restore(User $user, Invoice $invoice): bool
     {
-        return false;
+        return $user->tenant_id === $invoice->tenant_id;
     }
 
     public function forceDelete(User $user, Invoice $invoice): bool
     {
-        return false;
+        return $user->tenant_id === $invoice->tenant_id;
     }
 }

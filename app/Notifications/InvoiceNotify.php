@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InvoiceNotify extends Notification
+class InvoiceNotify extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -18,7 +18,7 @@ class InvoiceNotify extends Notification
      */
     public function __construct()
     {
-        //
+        $this->onConnection('redis');
     }
 
     /**
@@ -51,6 +51,13 @@ class InvoiceNotify extends Notification
     {
         return [
             //
+        ];
+    }
+
+    public function viaConnections(): array
+    {
+        return [
+            'mail' => 'redis',
         ];
     }
 }

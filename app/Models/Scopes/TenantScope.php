@@ -13,11 +13,11 @@ class TenantScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        if (Auth::check()) {
+        if (checkTenantId()) {
             $builder->where(
-                column: $model->getTable().'.user_id',
+                column: $model->getTable().'.tenant_id',
                 operator: '=',
-                value: Auth::user()?->getAttribute('id')
+                value: Auth::user()?->getAttribute('tenant_id')
             );
         }
 

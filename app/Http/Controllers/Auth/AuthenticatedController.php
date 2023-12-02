@@ -77,7 +77,8 @@ class AuthenticatedController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(null)
-            ->setStatusCode(Response::HTTP_NO_CONTENT);
+        return response()->json([
+            'message' => 'Token Revoked'
+        ])->setStatusCode(Response::HTTP_OK);
     }
 }

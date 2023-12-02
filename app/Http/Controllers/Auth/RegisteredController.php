@@ -7,16 +7,13 @@ namespace App\Http\Controllers\Auth;
 use App\DTOs\Auth\RegisterUserDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisteredController extends Controller
 {
-
     /**
      * @OA\Post(
      *      tags={"/auth"},
@@ -41,10 +38,10 @@ class RegisteredController extends Controller
      */
     public function __invoke(RegisterRequest $request): JsonResponse
     {
-        User::query()->create(
-            RegisterUserDto::fromApiRequest($request)
-                ->toArray()
-        );
+        $attributes = RegisterUserDto::fromApiRequest($request);
+
+        $tenant = Tenant::query()->create(['name' => $attributes->name]);
+        $tenant->users()->create($attributes->toArray());
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
